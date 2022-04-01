@@ -6,11 +6,25 @@ For now, there are 4 possible commands:
 
 create: expects 2 additional arguments, first: new domain name, second: ip
 
-example: cloudflare.py create example.enable.qa 127.0.0.1
+example: 
+    
+    cloudflare.py create example.enable.qa 127.0.0.1
+
+can also be called with extra parameters: 
+
+    record-type: A or CNAME, etc.
+    TTL: 1 for Auto
+    proxied: True or False
 
 delete: expects 1 additional argument, domain to delete
 
-example: cloudflare.py delete example.enable.qa
+example: 
+
+    cloudflare.py delete example.enable.qa
+
+can also be called with extra parameters: 
+
+    record-type: A or CNAME, etc.
 
 search-domain: expects 1 additional argument, domain to search for
 

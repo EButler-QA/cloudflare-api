@@ -49,9 +49,11 @@ def search_item(url):
     return record_id
 
 
-def search_domain(zone_id, full_domain):
+def search_domain(zone_id, full_domain, record_type="A"):
     print("Search domain: ")
-    url = "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records?match=all&type=A&name=" + full_domain
+    url = "https://api.cloudflare.com/client/v4/zones/" + \
+          zone_id + "/dns_records?match=all&type=" + \
+          record_type + "&name=" + full_domain
     return search_item(url)
 
 
@@ -61,13 +63,13 @@ def search_zone(domain):
     return search_item(url)
 
 
-def create_domain(zone_id, sub_domain, ip, type="A", ttl=3600, proxied=False):
+def create_domain(zone_id, sub_domain, content, record_type="A", ttl=3600, proxied=False):
     print("Create domain: ")
     url = "https://api.cloudflare.com/client/v4/zones/" + zone_id + "/dns_records"
     headers = {'Content-Type': 'application/json'}
-    data = {"type": type,
+    data = {"type": record_type,
             "name": sub_domain,
-            "content": ip,
+            "content": content,
             "ttl": ttl,
             "priority": 10,
             "proxied": proxied}
@@ -82,9 +84,9 @@ def create_domain(zone_id, sub_domain, ip, type="A", ttl=3600, proxied=False):
     return r.json()["success"]
 
 
-def delete_domain(zone_id, full_domain):
+def delete_domain(zone_id, full_domain, record_type="A"):
     print("Delete domain: ")
-    record_id = search_domain(zone_id, full_domain)
+    record_id = search_domain(zone_id, full_domain, record_type)
 
     result = False
 
@@ -117,11 +119,23 @@ zone_id = search_zone(domain)
 print("Command: {}\nZone ID: {}\nSub-Domain: {}\nDomain: {}".format(command, zone_id, sub_domain, domain))
 
 if command == "create":
-    ip = sys.argv[3]
-    result = create_domain(zone_id, sub_domain, ip)
+    content = sys.argv[3]
+    try:
+        record_type = sys.argv[4]
+        ttl = int(sys.argv[5])
+        proxied = sys.argv[6] == "True"
+        result = create_domain(zone_id, sub_domain, content, record_type, ttl, proxied)
+    except IndexError:
+        print("No extra parameters")
+        result = create_domain(zone_id, sub_domain, content)
     print("Record successfully created") if result else print("Error while creating the record")
 elif command == "delete":
-    result = delete_domain(zone_id, full_domain)
+    try:
+        record_type = sys.argv[3]
+        result = delete_domain(zone_id, full_domain, record_type)
+    except IndexError:
+        print("No extra parameters")
+        result = delete_domain(zone_id, full_domain)
     print("Record successfully deleted") if result else print("Error while deleting the record")
 elif command == "search-domain":
     result = search_domain(zone_id, full_domain)
