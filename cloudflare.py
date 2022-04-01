@@ -123,9 +123,15 @@ if command == "create":
 elif command == "delete":
     result = delete_domain(zone_id, full_domain)
     print("Record successfully deleted") if result else print("Error while deleting the record")
-elif command == "search":
+elif command == "search-domain":
     result = search_domain(zone_id, full_domain)
+    if result is not None:
+        print("Domain ID found: {}".format(result))
+    else:
+        print("No domain id found for {}".format(full_domain))
+elif command == "search-zone":
+    result = search_zone(domain)
     if result is not None:
         print("Zone ID found: {}".format(result))
     else:
-        print("No domain id found for {}".format(full_domain))
+        print("No zone id found for {}".format(full_domain))
