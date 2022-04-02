@@ -19,16 +19,12 @@ def print_request(request):
     print("Body: ")
     if request.request.body is not None:
         print(request.request.body)
+    prettify(request.json())
 
 
 def prettify(response):
     json_formatted_str = json.dumps(response, indent=2)
     print(json_formatted_str)
-
-
-def log_request(request):
-    print_request(request)
-    prettify(request.json())
 
 
 def search_item(url):
@@ -38,7 +34,7 @@ def search_item(url):
                      auth=BearerAuth('TVVSMS7bicYwu-PiBa7FH436l4O351gD9scUQ2ui'),
                      headers=headers)
 
-    log_request(r)
+    print_request(r)
     response = r.json()
 
     record_id = None
@@ -79,7 +75,7 @@ def create_domain(zone_id, sub_domain, content, record_type="A", ttl=3600, proxi
                       data=json.dumps(data),
                       headers=headers)
 
-    log_request(r)
+    print_request(r)
 
     return r.json()["success"]
 
@@ -98,7 +94,7 @@ def delete_domain(zone_id, full_domain, record_type="A"):
                             auth=BearerAuth('TVVSMS7bicYwu-PiBa7FH436l4O351gD9scUQ2ui'),
                             headers=headers)
 
-        log_request(r)
+        print_request(r)
         response = r.json()
 
         result = response["success"]
