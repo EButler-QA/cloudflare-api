@@ -124,7 +124,12 @@ if command == "create":
     except IndexError:
         print("No extra parameters")
         result = create_domain(zone_id, sub_domain, content)
-    print("Record successfully created") if result else print("Error while creating the record")
+    if result:
+        print("Record successfully created")
+        sys.exit(0)
+    else:
+        print("Error while creating the record")
+        sys.exit(1)
 elif command == "delete":
     try:
         record_type = sys.argv[3]
@@ -132,16 +137,25 @@ elif command == "delete":
     except IndexError:
         print("No extra parameters")
         result = delete_domain(zone_id, full_domain)
-    print("Record successfully deleted") if result else print("Error while deleting the record")
+    if result:
+        print("Record successfully deleted")
+        sys.exit(0)
+    else:
+        print("Error while deleting the record")
+        sys.exit(1)
 elif command == "search-domain":
     result = search_domain(zone_id, full_domain)
     if result is not None:
         print("Domain ID found: {}".format(result))
+        sys.exit(0)
     else:
         print("No domain id found for {}".format(full_domain))
+        sys.exit(1)
 elif command == "search-zone":
     result = search_zone(domain)
     if result is not None:
         print("Zone ID found: {}".format(result))
+        sys.exit(0)
     else:
         print("No zone id found for {}".format(full_domain))
+        sys.exit(1)
